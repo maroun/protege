@@ -14,6 +14,19 @@
         body {
             font-family: 'Arial', sans-serif;
             overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .animation-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
@@ -21,9 +34,24 @@
             width: 1080px;
             height: 1920px;
             position: relative;
-            margin: 0 auto;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             overflow: hidden;
+            transform-origin: center center;
+        }
+
+        /* Responsive scaling */
+        @media (max-aspect-ratio: 9/16) {
+            /* Width is the limiting factor */
+            .animation-container {
+                transform: scale(calc(100vw / 1080));
+            }
+        }
+
+        @media (min-aspect-ratio: 9/16) {
+            /* Height is the limiting factor */
+            .animation-container {
+                transform: scale(calc(100vh / 1920));
+            }
         }
 
         /* Scene container */
@@ -402,7 +430,7 @@
 
         /* Progress bar */
         .progress-bar {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             height: 10px;
@@ -418,7 +446,8 @@
     </style>
 </head>
 <body>
-    <div class="animation-container">
+    <div class="animation-wrapper">
+        <div class="animation-container">
         <!-- Scene 1: Intro -->
         <div id="scene1" class="scene">
             <div class="globe"></div>
@@ -497,6 +526,7 @@
         </div>
 
         <div class="progress-bar"></div>
+        </div>
     </div>
 
     <script>
