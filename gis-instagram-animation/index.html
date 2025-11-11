@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS Tools Instagram Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .animation-container {
+            width: 1080px;
+            height: 1920px;
+            position: relative;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        /* Scene container */
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .scene.active {
+            animation: sceneAppear 0.5s forwards;
+        }
+
+        @keyframes sceneAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Scene 1 - Intro */
+        #scene1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .globe {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            position: relative;
+            animation: spin 10s linear infinite;
+            box-shadow: 0 0 100px rgba(79, 172, 254, 0.5);
+        }
+
+        .globe::before {
+            content: '🌍';
+            font-size: 200px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .main-title {
+            font-size: 120px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-top: 80px;
+            opacity: 0;
+            animation: fadeInUp 1s 0.5s forwards;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .icons-row {
+            display: flex;
+            gap: 60px;
+            margin-top: 100px;
+            opacity: 0;
+            animation: fadeInUp 1s 1.5s forwards;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-item .icon {
+            font-size: 100px;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .icon-item .label {
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Scene 2 - Highlights Carousel */
+        #scene2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .tool-card {
+            position: absolute;
+            width: 900px;
+            height: 1200px;
+            background: white;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: scale(0) rotate(-10deg);
+        }
+
+        .tool-card.show {
+            animation: cardPop 1s forwards;
+        }
+
+        @keyframes cardPop {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-10deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .tool-icon {
+            font-size: 200px;
+            margin-bottom: 40px;
+        }
+
+        .tool-name {
+            font-size: 100px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .tool-desc {
+            font-size: 60px;
+            color: #666;
+            text-align: center;
+            padding: 0 80px;
+            line-height: 1.5;
+        }
+
+        .burst {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .burst-particle {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            animation: burstOut 0.8s ease-out;
+        }
+
+        @keyframes burstOut {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Scene 3 - Recommendations */
+        #scene3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 100px;
+        }
+
+        .recommendations {
+            display: flex;
+            gap: 80px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .rec-column {
+            flex: 1;
+            background: white;
+            border-radius: 50px;
+            padding: 80px 60px;
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+
+        .rec-column:first-child {
+            animation-delay: 0.2s;
+        }
+
+        .rec-column:last-child {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .rec-title {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .budget-friendly {
+            color: #10b981;
+        }
+
+        .pro-level {
+            color: #f59e0b;
+        }
+
+        .rec-list {
+            list-style: none;
+        }
+
+        .rec-item {
+            font-size: 60px;
+            padding: 40px 0;
+            border-bottom: 3px solid #e5e7eb;
+            opacity: 0;
+            animation: fadeInItem 0.5s forwards;
+        }
+
+        .rec-item:nth-child(1) { animation-delay: 0.8s; }
+        .rec-item:nth-child(2) { animation-delay: 1s; }
+        .rec-item:nth-child(3) { animation-delay: 1.2s; }
+        .rec-item:nth-child(4) { animation-delay: 1.4s; }
+
+        @keyframes fadeInItem {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .sparkle {
+            display: inline-block;
+            animation: sparkleAnim 1s ease-in-out infinite;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.3) rotate(180deg); }
+        }
+
+        /* Scene 4 - Pro Tip */
+        #scene4 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .pro-tip-container {
+            background: white;
+            border-radius: 50px;
+            padding: 120px 100px;
+            max-width: 900px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            animation: swipeIn 0.8s 0.3s forwards;
+        }
+
+        @keyframes swipeIn {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .pro-tip-icon {
+            font-size: 150px;
+            margin-bottom: 40px;
+        }
+
+        .pro-tip-text {
+            font-size: 70px;
+            line-height: 1.6;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Scene 5 - Outro */
+        #scene5 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .outro-content {
+            text-align: center;
+        }
+
+        .outro-icons {
+            font-size: 200px;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: flyIn 1s 0.5s forwards;
+        }
+
+        @keyframes flyIn {
+            from {
+                opacity: 0;
+                transform: translateY(-200px) rotate(-45deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        .outro-text {
+            font-size: 80px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 100px;
+            opacity: 0;
+            animation: fadeInUp 1s 1s forwards;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .hashtags {
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 60px;
+            max-width: 900px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 1s 1.5s forwards;
+        }
+
+        .hashtag-line {
+            font-size: 45px;
+            color: white;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 10px;
+            background: #10b981;
+            width: 0%;
+            animation: progress 25s linear forwards;
+            z-index: 1000;
+        }
+
+        @keyframes progress {
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container">
+        <!-- Scene 1: Intro -->
+        <div id="scene1" class="scene">
+            <div class="globe"></div>
+            <div class="main-title">🚀 Mapping Made Easy!</div>
+            <div class="icons-row">
+                <div class="icon-item">
+                    <div class="icon">💸</div>
+                    <div class="label">FREE</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon">🆓</div>
+                    <div class="label">OPEN SOURCE</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon">📚</div>
+                    <div class="label">STUDENT</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon">💳</div>
+                    <div class="label">SUBSCRIPTION</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene 2: Highlights Carousel -->
+        <div id="scene2" class="scene">
+            <div id="tool-cards"></div>
+        </div>
+
+        <!-- Scene 3: Recommendations -->
+        <div id="scene3" class="scene">
+            <div class="recommendations">
+                <div class="rec-column">
+                    <h2 class="rec-title budget-friendly">💚 Budget-Friendly</h2>
+                    <ul class="rec-list">
+                        <li class="rec-item">🌱 QGIS</li>
+                        <li class="rec-item">🌿 GRASS GIS</li>
+                        <li class="rec-item">🗺️ Mapwarper</li>
+                        <li class="rec-item">☁️ Google Earth Engine</li>
+                    </ul>
+                </div>
+                <div class="rec-column">
+                    <h2 class="rec-title pro-level">⭐ Pro-Level</h2>
+                    <ul class="rec-list">
+                        <li class="rec-item">🏆 ArcGIS <span class="sparkle">✨</span></li>
+                        <li class="rec-item">🔥 Mapbox <span class="sparkle">✨</span></li>
+                        <li class="rec-item">📊 Carto <span class="sparkle">✨</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene 4: Pro Tip -->
+        <div id="scene4" class="scene">
+            <div class="pro-tip-container">
+                <div class="pro-tip-icon">💡</div>
+                <div class="pro-tip-text">
+                    Mix & Match: Free tools for core work, Subscription for high-end visuals!
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene 5: Outro -->
+        <div id="scene5" class="scene">
+            <div class="outro-content">
+                <div class="outro-icons">💖 🚀</div>
+                <div class="outro-text">Save this & share with<br>your geospatial crew!</div>
+                <div class="hashtags">
+                    <div class="hashtag-line">#GIS #MappingTools #OpenSource</div>
+                    <div class="hashtag-line">#DataViz #QGIS #ArcGIS</div>
+                    <div class="hashtag-line">#Mapbox #Carto #GoogleEarthEngine</div>
+                    <div class="hashtag-line">#GRASSGIS #MapWarper</div>
+                    <div class="hashtag-line">#StudentResources #Geospatial</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar"></div>
+    </div>
+
+    <script>
+        // Tool data for Scene 2
+        const tools = [
+            {
+                icon: '🏆',
+                name: 'ArcGIS',
+                desc: 'Subscription + Student Licenses',
+                color: '#0079c1',
+                burst: false
+            },
+            {
+                icon: '🌱',
+                name: 'QGIS',
+                desc: '100% FREE & OPEN SOURCE',
+                color: '#10b981',
+                burst: true
+            },
+            {
+                icon: '☁️',
+                name: 'Google Earth Engine',
+                desc: 'Free for Research & Education',
+                color: '#4285f4',
+                burst: false
+            },
+            {
+                icon: '🔥',
+                name: 'Mapbox',
+                desc: 'Free Tier + Paid Plans',
+                color: '#ff6b6b',
+                burst: false
+            },
+            {
+                icon: '📊',
+                name: 'Carto',
+                desc: 'Student Discounts Available',
+                color: '#f59e0b',
+                burst: false
+            },
+            {
+                icon: '🧭',
+                name: 'Whitebox Geo',
+                desc: 'Free Core vs Pro Upgrade',
+                color: '#8b5cf6',
+                burst: false
+            },
+            {
+                icon: '🌿',
+                name: 'GRASS GIS',
+                desc: 'Free & Open Source',
+                color: '#22c55e',
+                burst: true
+            },
+            {
+                icon: '🗺️',
+                name: 'Mapwarper',
+                desc: 'Free Georeferencing',
+                color: '#3b82f6',
+                burst: false
+            }
+        ];
+
+        // Scene timing (in seconds)
+        const sceneTiming = [
+            { scene: 1, start: 0, end: 3 },
+            { scene: 2, start: 3, end: 12 },
+            { scene: 3, start: 12, end: 18 },
+            { scene: 4, start: 18, end: 21 },
+            { scene: 5, start: 21, end: 25 }
+        ];
+
+        let currentScene = 0;
+
+        // Initialize animation
+        function init() {
+            // Start with scene 1
+            showScene(1);
+
+            // Schedule scene transitions
+            sceneTiming.forEach(timing => {
+                setTimeout(() => {
+                    showScene(timing.scene);
+                }, timing.start * 1000);
+            });
+
+            // Initialize Scene 2 carousel
+            initToolCarousel();
+        }
+
+        function showScene(sceneNum) {
+            // Hide all scenes
+            document.querySelectorAll('.scene').forEach(s => {
+                s.classList.remove('active');
+                s.style.opacity = '0';
+            });
+
+            // Show target scene
+            const scene = document.getElementById(`scene${sceneNum}`);
+            if (scene) {
+                scene.classList.add('active');
+                scene.style.opacity = '1';
+            }
+            currentScene = sceneNum;
+        }
+
+        function initToolCarousel() {
+            const container = document.getElementById('tool-cards');
+
+            tools.forEach((tool, index) => {
+                // Calculate timing for each tool (1 second each, starting at 3s)
+                const showTime = 3000 + (index * 1100);
+
+                setTimeout(() => {
+                    // Clear previous cards
+                    container.innerHTML = '';
+
+                    // Create card
+                    const card = document.createElement('div');
+                    card.className = 'tool-card show';
+                    card.style.background = `linear-gradient(135deg, white 0%, ${tool.color}15 100%)`;
+
+                    card.innerHTML = `
+                        <div class="tool-icon">${tool.icon}</div>
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-desc">${tool.desc}</div>
+                    `;
+
+                    container.appendChild(card);
+
+                    // Add burst effect for certain tools
+                    if (tool.burst) {
+                        createBurst(container, tool.color);
+                    }
+                }, showTime);
+            });
+        }
+
+        function createBurst(container, color) {
+            const burst = document.createElement('div');
+            burst.className = 'burst';
+
+            // Create multiple particles
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'burst-particle';
+                particle.style.background = color;
+
+                // Random direction
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 300;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+
+                burst.appendChild(particle);
+            }
+
+            container.appendChild(burst);
+
+            // Remove burst after animation
+            setTimeout(() => {
+                burst.remove();
+            }, 1000);
+        }
+
+        // Start animation when page loads
+        window.addEventListener('load', init);
+
+        // Optional: Restart animation on click
+        document.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
